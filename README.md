@@ -70,7 +70,7 @@ Unfortunately, it couldn't downloag GIFs from cAdvisor monitor.
 
 - Python dependency management tool [Poetry](https://python-poetry.org/) helped a lot in preliminary download of images and generating size report.
 
-- Docker has did a job as always, no complaints. :-)
+- Docker did a good job as always, no complaints. :-)
 
 
 
