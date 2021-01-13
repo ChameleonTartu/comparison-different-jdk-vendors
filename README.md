@@ -9,9 +9,70 @@ In this presentation, you will see available vendors in conemporary Java world, 
 - [Amazon](https://hub.docker.com/_/amazoncorretto)
 - [Azul Zulu](https://hub.docker.com/r/azul/zulu-openjdk-alpine)
 - [Bellsoft](https://hub.docker.com/r/bellsoft/liberica-openjdk-alpine)
-- [GraalVM](https://hub.docker.com/r/oracle/graalvm-ce/tags?page=1&ordering=last_updated)
-- Java.net
 - [SAP](https://hub.docker.com/_/sapmachine)
 - [TravaOpenJDK](https://hub.docker.com/r/travactory/docker-openjdk11-kubectl)
-- [CircleCI OpenJDK](https://hub.docker.com/r/circleci/openjdk)
+
+Some other vendors are not covered as they have restricted licenses or under another set of technologies set. For instance, GraalVM is a separate discussion track.
+
+## Size comparison
+
+All images are taken with alpine Linux, if this distribution was available for comparison.
+
+See results in [Sizes comparison report](comparison/generated_sizes_report.html)
+
+## Performance comparison
+
+To compare performance and stats among different openjdk images, we have used `Locust` load testing framework.
+
+```
+poetry run locust -f load_test.py -u 500 -r 10 --host http://localhost:8085
+```
+
+
+Images themselves were constrained to use as much RAM as they require but bounded by 2 cores only.
+
+```
+docker run -p8085:8085 --cpuset-cpus="0,1" -d bellsoft_liberica-openjdk-alpine-musl:11
+```
+
+Reports for each distribution are available under `stats/docker/<image_name>` paths.
+
+
+| Image.         | Total # of requests     | Avg time (ms)     |
+| :------------- | :----------: | -----------: |
+|  amazoncorretto:11 | 845   | 259728    |
+| amazoncorretto:11-alpine   | 818 | 248999 |
+| azul_zulu-openjdk-alpine:11-jre | 833 | 238408 |
+| bellsoft_liberica-openjdk-alpine-musl:11 | 834 | 244292 |
+| bellsoft_liberica-openjdk-alpine:11 | 789 | 245254 |
+| sapmachine:11 | 760 | 249115 |
+| travactory_docker-openjdk11-kubectl:latest | 759 | 258456 |
+| adoptopenjdk_openjdk11:alpine | | |
+| azul_zulu-openjdk:11 | | |
+| azul_zulu-openjdk-alpine:11 | | |
+| amazoncorretto:11-alpine-jdk | | |
+| adoptopenjdk_openjdk11-openj9:alpine | | |
+
+
+## Summary
+
+Size winner: `bellsoft/liberica-openjdk-alpine-musl:11`
+
+Performance winner: `?`
+
+## Ranting about tools
+
+- I had a great hope for [monolith single HTML download tool](https://github.com/Y2Z/monolith).
+Unfortunately, it couldn't downloag GIFs from cAdvisor monitor.
+
+- I wanted to find a nice tool for running Docker images monitoring. [cAdvisor](https://github.com/google/cadvisor) was supposed to be on this tool. As I use it, I figured out that even it builds nice looking graphs, it doesn't do more than `docker stats`, so it is not possible to see image performance over the last N minutes.
+
+## Recommendations
+
+- Python dependency management tool [Poetry](https://python-poetry.org/) helped a lot in preliminary download of images and generating size report.
+
+- Docker has did a job as always, no complaints. :-)
+
+
+
 

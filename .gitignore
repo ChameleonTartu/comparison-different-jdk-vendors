@@ -34,3 +34,7 @@ build/
 
 ### Mac cache
 .DS_Store
+
+### Python
+comparison/.venv/
+comparison/__pycache__/
